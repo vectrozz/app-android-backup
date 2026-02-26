@@ -1,0 +1,56 @@
+services:
+  # ── Caddy reverse proxy (auto-HTTPS via Let's Encrypt) ─────
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"   # HTTP/3 (QUIC)
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # TLS certs
+      - caddy_config:/config
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # ── FastAPI server (internal only — not exposed to internet) ─
+  api:
+    build: .
+    # No "ports:" — only reachable via Caddy on the internal Docker network
+    expose:
+      - "8000"
+    env_file: .env
+    volumes:
+      - storage_data:/data/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── PostgreSQL (internal only) ─────────────────────────────
+  db:
+    image: postgres:16-alpine
+    # No "ports:" — not exposed to the host/internet
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-zkbackup}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zkbackup}
+      POSTGRES_DB: ${POSTGRES_DB:-zkbackup}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zkbackup"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  storage_data:
+  caddy_data:
+  caddy_config:

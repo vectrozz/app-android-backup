@@ -1,0 +1,38 @@
+# ZK Backup — Caddy reverse proxy
+#
+# DOMAIN can be:
+#   - A real domain:  backup.example.com  → auto Let's Encrypt HTTPS
+#   - An IP address:  203.0.113.42        → self-signed TLS (tls internal)
+#   - localhost                            → self-signed TLS for local dev
+#
+# Set DOMAIN in your .env file.
+
+{$DOMAIN} {
+    # If DOMAIN is an IP or localhost, Caddy can't use Let's Encrypt.
+    # "tls internal" tells Caddy to generate a self-signed cert instead.
+    # For a real domain, remove or comment out the next line — Caddy
+    # will auto-provision a Let's Encrypt cert.
+    tls internal
+
+    reverse_proxy api:8000
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Request size limit (slightly above 10 MB chunk + overhead)
+    request_body {
+        max_size 12MB
+    }
+
+    # Access logging
+    log {
+        output stdout
+        format json
+    }
+}

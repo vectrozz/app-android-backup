@@ -1,0 +1,39 @@
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/captures/
+*.iml
+.externalNativeBuild/
+.cxx/
+
+# Gradle
+.gradle/
+
+# Server Python
+server/__pycache__/
+server/**/__pycache__/
+server/.env
+server/venv/
+server/.venv/
+**/*.pyc
+**/*.pyo
+
+# Storage (runtime data)
+server/data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Shield icon representing security/privacy -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,22L30,33v16.5c0,15.19,10.23,29.39,24,32.85C67.77,78.89,78,64.69,78,49.5V33L54,22zM54,58.99h0V37.16l18,8.18v4.16c0,11.12,-6.75,21.49,-18,24.86V58.99z" />
+</vector>

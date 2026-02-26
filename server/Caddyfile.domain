@@ -1,0 +1,30 @@
+# ZK Backup — Caddy config for REAL DOMAIN with Let's Encrypt
+#
+# Use this file instead of Caddyfile when you have a domain name.
+# Caddy will auto-provision and renew TLS certs from Let's Encrypt.
+#
+#   cp Caddyfile.domain Caddyfile
+#   # set DOMAIN=backup.yourdomain.com in .env
+#   docker compose up -d
+
+{$DOMAIN} {
+    reverse_proxy api:8000
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    request_body {
+        max_size 12MB
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}
