@@ -8,7 +8,8 @@ services:
       - "${HTTPS_PORT:-443}:443/udp"   # HTTP/3 (QUIC)
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data        # TLS certs
+      - ./certs:/certs:ro
+      - caddy_data:/data
       - caddy_config:/config
     environment:
       DOMAIN: ${DOMAIN:-localhost}
