@@ -1,17 +1,13 @@
 # ZK Backup — Caddy reverse proxy
 #
-# DOMAIN can be:
-#   - A real domain:  backup.example.com  → auto Let's Encrypt HTTPS
-#   - An IP address:  203.0.113.42        → self-signed TLS (tls internal)
-#   - localhost                            → self-signed TLS for local dev
+# For IP-based / self-hosted setup:
+#   Uses ":443" (catch-all) so it works even without SNI
+#   (Android doesn't send SNI when connecting to an IP address).
+#   "tls internal" generates a self-signed certificate.
 #
-# Set DOMAIN in your .env file.
+# For a real domain: use Caddyfile.domain instead.
 
-{$DOMAIN} {
-    # If DOMAIN is an IP or localhost, Caddy can't use Let's Encrypt.
-    # "tls internal" tells Caddy to generate a self-signed cert instead.
-    # For a real domain, remove or comment out the next line — Caddy
-    # will auto-provision a Let's Encrypt cert.
+:443 {
     tls internal
 
     reverse_proxy api:8000
