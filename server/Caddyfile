@@ -1,13 +1,17 @@
 # ZK Backup — Caddy reverse proxy
 #
 # For IP-based / self-hosted setup:
-#   Uses ":443" (catch-all) so it works even without SNI
+#   "default_sni" ensures Caddy matches connections even without SNI
 #   (Android doesn't send SNI when connecting to an IP address).
-#   "tls internal" generates a self-signed certificate.
+#   "tls internal" generates a self-signed certificate for the IP.
 #
 # For a real domain: use Caddyfile.domain instead.
 
-:443 {
+{
+	default_sni {$DOMAIN}
+}
+
+{$DOMAIN} {
     tls internal
 
     reverse_proxy api:8000
